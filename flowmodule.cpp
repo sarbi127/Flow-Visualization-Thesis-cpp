@@ -30,6 +30,7 @@
 #include <flow\flowmodule.h>
 
 #include <flow/FieldLine.h>
+#include <flow/SeedPoint.h>
 
 
 namespace inviwo {
@@ -38,6 +39,7 @@ namespace inviwo {
     setIdentifier("Flow");
 
 	registerProcessor(FieldLine);
+	registerProcessor(SeedPoint);
 
 	
 }

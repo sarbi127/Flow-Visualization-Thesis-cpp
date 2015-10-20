@@ -273,8 +273,7 @@ void FieldLine::process() {
           {
                   for (size_t z = 0; z < dims.z; z += 64)
                   {
-                          seedpoints.push_back((index_to_texture * vec4(x, y, z,
-  1)).xyz);
+                          seedpoints.push_back((index_to_texture * vec4(x, y, z, 1)).xyz);
                   }
           }
   }
@@ -297,7 +296,7 @@ void FieldLine::process() {
 		  vec3 N = trilinear(volume, *it);
 
 
-		 /* std::vector<vec3> Npoints = GetNeighbour(N, *it, m_.get());
+		 std::vector<vec3> Npoints = GetNeighbour(N, *it, m_.get());
 		  Npoints.push_back(*it);
 		  for (auto p : Npoints){
 
@@ -312,7 +311,7 @@ void FieldLine::process() {
 
 			  }
 		  }
-		  */
+		  
 		  
 
 	      //size3_t currentPosIndexSpace = size3_t(*it * vec3(inportvol_.getData()->getDimensions()));//textur coor to Index coor(0,1)
@@ -321,7 +320,7 @@ void FieldLine::process() {
 
 		  //////////////////////////// 4 neighbor point ///////////////////////////////
 		  
-		 neighbor p;
+		/* neighbor p;
 		 
 		 vec3 w = glm::normalize(glm::cross(N, vec3(0, 0, 1)));
 
@@ -379,7 +378,7 @@ void FieldLine::process() {
 
 			  step(volume, mesh, p.p4, steps, -1, index);
 
-		  }
+		  }*/
 
 		  //LogInfo("seedpoint:" << *it);
 
@@ -500,32 +499,20 @@ vec4 FieldLine::velocity2color(const vec3 &veloicty) {
 
 
 
-std::vector<vec3> FieldLine::GetNeighbour(vec3 n, vec3 seedpoint, int m){
-
+std::vector<vec3> FieldLine::GetNeighbour(vec3 n, vec3 seedpoint, int m) {
 	float fraction = 360 / m;
 	float angle = 0;
 	vec3 p1;
 	std::vector<vec3> vec;
 
 	vec3 w = glm::normalize(glm::cross(n, vec3(0, 0, 1)));
-
-	//p1 = seedpoint + d_.get() * w;
-
-	//vec.push_back(p1);
-
 	for (size_t i = 0; i < m; i++){
-	
-		
+
 		vec3 new_pos = seedpoint + d_.get() * w;
 		w = glm::rotate(w, fraction, n);
-		vec.push_back(new_pos);
-
-		//angle += fraction;
-	
+		vec.push_back(new_pos);	
 	}
-
 	return vec;
-
 }
 
 /*float FieldLine::CalculateDistance(vec3& p1, const std::vector<vec3>& p2)
