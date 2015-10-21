@@ -8,7 +8,10 @@
 #include <modules/opengl/image/layergl.h>
 #include <inviwo/core/datastructures/image/layerram.h>
 
+<<<<<<< HEAD
 #define PI 3.14
+=======
+>>>>>>> origin/master
 
 namespace inviwo {
 
@@ -25,17 +28,26 @@ SeedPoint::SeedPoint()
 
 	center_("sphereCenter", "Center", vec3(0.5f, 0.5f, 0.5f), vec3(0, 0, 0), vec3(1, 1, 1)),
 	radius_("sphereRadius","Radius"),
+<<<<<<< HEAD
 	n_("m_", " m ", 4, 0, 1, 0),
 	m_("n_", " n ", 4, 0, 1, 0)
+=======
+	n_("m_", " n ", 20, 0, 1, 0),
+	m_("n_", " m ", 20, 0, 1, 0)
+>>>>>>> origin/master
 
 {
 	addPort(outportpoint_);
 
+<<<<<<< HEAD
 	addProperty(center_);
+=======
+>>>>>>> origin/master
 	addProperty(radius_);
     addProperty(n_);
 	addProperty(m_);
 
+<<<<<<< HEAD
 	outportpoint_.setData(&seedpoints_);
 }
 
@@ -103,6 +115,43 @@ void SeedPoint::process() {
 
 		}
 	}
+=======
+	seedpoints_ = std::make_shared<PointCloud>();
+	outportpoint_.setData(seedpoints_);
+
+
+}
+
+SeedPoint::~SeedPoint() {}
+
+
+
+void SeedPoint::process() {
+
+	float xfrac = 360 / m_;
+	float yfrac = 360 / n_;
+
+	float xangle, yangle = 0;
+
+	for (size_t i = 0; i < m_.get(); i++){
+	
+		vec3 dir = glm::rotate(vec3(1, 0, 0), xangle, vec3(0, 1, 0));
+
+		xangle += xfrac;
+
+		for (size_t j = 0; j < n_.get(); j++){
+		
+			dir = glm::rotate(dir, yangle, vec3(1, 0, 0));
+
+			yangle += yfrac;
+
+			seedpoints_->addPoint(center_.get() + glm::normalize(dir) * radius_.get());
+		
+		}
+
+	}
+
+>>>>>>> origin/master
 }
 
 } // namespace

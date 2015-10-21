@@ -37,8 +37,15 @@ namespace inviwo {
 	
 	FlowModule::FlowModule(InviwoApplication* app) : InviwoModule(app, "Flow") {
 
+<<<<<<< HEAD
 	registerProcessor<FieldLine>();	
 	registerProcessor<SeedPoint>();	
+=======
+	registerProcessor(FieldLine);
+	registerProcessor(SeedPoint);
+
+	
+>>>>>>> origin/master
 }
 
 } // namespace
