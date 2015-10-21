@@ -217,8 +217,8 @@ void FieldLine::process() {
 
   auto dims = inputvolume->getDimensions();
 
-  auto seedpoints_pc = inportpoint_.getData();
-  auto seedpoints = seedpoints_pc->getPoints();
+  auto seedpoints = inportpoint_.getData().get();
+  
 
   const VolumeRAM *volume =
       inportvol_.getData()->getRepresentation<VolumeRAM>();
@@ -237,23 +237,17 @@ void FieldLine::process() {
                   for (size_t z = 0; z < dims.z; z++)
                   {
 
-                          auto spherical_coords =
-  volume->getValueAsVec3Double(size3_t(x, y, z));
+                          auto spherical_coords =volume->getValueAsVec3Double(size3_t(x, y, z));
 
-                          float z_c = spherical_coords.x *
-  cos(spherical_coords.z);
-                          float y_c = spherical_coords.x *
-  sin(spherical_coords.z) * sin(spherical_coords.y);
-                          float x_c = spherical_coords.x *
-  sin(spherical_coords.z) * cos(spherical_coords.y);
+                          float z_c = spherical_coords.x *cos(spherical_coords.z);
+                          float y_c = spherical_coords.x *sin(spherical_coords.z) * sin(spherical_coords.y);
+                          float x_c = spherical_coords.x *sin(spherical_coords.z) * cos(spherical_coords.y);
 
-                          vec3 new_pos = (model_to_texture * vec4(x_c, y_c, z_c,
-  1)).xyz;
+                          vec3 new_pos = (model_to_texture * vec4(x_c, y_c, z_c, 1)).xyz;
                           //vec3 new_pos = vec3(x_c, y_c, z_c);
                           dvec3 val = dvec3(new_pos.x, new_pos.y, new_pos.z);
 
-                          cart_vol->setValueFromVec3Double(size3_t(x, y, z),
-  val);// = tgt::svec3(x_c, y_c, z_c); // setSpacing or setVoxelFloat?
+                          cart_vol->setValueFromVec3Double(size3_t(x, y, z),val);// = tgt::svec3(x_c, y_c, z_c); // setSpacing or setVoxelFloat?
 
                           //vox->x = x_c;
                           //vox->y = y_c;
@@ -263,6 +257,7 @@ void FieldLine::process() {
                   }
           }
   }
+
   */
 
   // Seed Points
@@ -273,8 +268,7 @@ void FieldLine::process() {
           {
                   for (size_t z = 0; z < dims.z; z += 64)
                   {
-                          seedpoints.push_back((index_to_texture * vec4(x, y, z,
-  1)).xyz);
+                          seedpoints.push_back((index_to_texture * vec4(x, y, z, 1)).xyz);
                   }
           }
   }
@@ -289,12 +283,12 @@ void FieldLine::process() {
   }
 
 
-  for (auto it = seedpoints.begin(); it != seedpoints.end(); ++it) {
+  for (auto it = seedpoints->begin(); it != seedpoints->end(); ++it) {
 
 		  IndexBufferRAM *index =
 			  mesh->addIndexBuffer(DrawType::LINES, ConnectivityType::NONE); // Buffer
-
-		  vec3 N = trilinear(volume, *it);
+		  vec3 pos = *it;
+		  vec3 N = trilinear(volume, pos);
 
 
 		 /* std::vector<vec3> Npoints = GetNeighbour(N, *it, m_.get());
@@ -325,61 +319,61 @@ void FieldLine::process() {
 		 
 		 vec3 w = glm::normalize(glm::cross(N, vec3(0, 0, 1)));
 
-		 p.p1 = *it + d_.get() * w;
+		 //p.p1 = *it + d_.get() * w;
 
-		  if (fwd) {
+		 // if (fwd) {
 
-			  step(volume, mesh, p.p1, steps, 1, index);
+			//  step(volume, mesh, p.p1, steps, 1, index);
 
-		  }
-		  if (bwd) {
+		 // }
+		 // if (bwd) {
 
-			  step(volume, mesh, p.p1, steps, -1, index);
+			//  step(volume, mesh, p.p1, steps, -1, index);
 
-		  }
+		 // }
 
-		  p.p2 = *it - d_.get() * w;
+		 // p.p2 = *it - d_.get() * w;
 
-		  //LogInfo("p2: " << p.p2);
+		 // //LogInfo("p2: " << p.p2);
 
-		  if (fwd) {
+		 // if (fwd) {
 
-			  step(volume, mesh, p.p2, steps, 1, index);
+			//  step(volume, mesh, p.p2, steps, 1, index);
 
-		  }
-		  if (bwd) {
+		 // }
+		 // if (bwd) {
 
-			  step(volume, mesh, p.p2, steps, -1, index);
+			//  step(volume, mesh, p.p2, steps, -1, index);
 
-		  }
+		 // }
 
-		  vec3 a = glm::normalize(glm::cross(N, w));
+		 // vec3 a = glm::normalize(glm::cross(N, w));
 
-		  p.p3 = *it + d_.get() * a;
+		 // p.p3 = *it + d_.get() * a;
 
-		  if (fwd) {
+		 // if (fwd) {
 
-			  step(volume, mesh, p.p3, steps, 1, index);
+			//  step(volume, mesh, p.p3, steps, 1, index);
 
-		  }
-		  if (bwd) {
+		 // }
+		 // if (bwd) {
 
-			  step(volume, mesh, p.p3, steps, -1, index);
+			//  step(volume, mesh, p.p3, steps, -1, index);
 
-		  }
+		 // }
 
-		  p.p4 = *it - d_.get() * a;
+		 // p.p4 = *it - d_.get() * a;
 
-		  if (fwd) {
+		 // if (fwd) {
 
-			  step(volume, mesh, p.p4, steps, 1, index);
+			//  step(volume, mesh, p.p4, steps, 1, index);
 
-		  }
-		  if (bwd) {
+		 // }
+		 // if (bwd) {
 
-			  step(volume, mesh, p.p4, steps, -1, index);
+			//  step(volume, mesh, p.p4, steps, -1, index);
 
-		  }
+		 // }
 
 		  //LogInfo("seedpoint:" << *it);
 

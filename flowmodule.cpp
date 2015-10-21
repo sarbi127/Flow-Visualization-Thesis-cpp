@@ -30,16 +30,15 @@
 #include <flow\flowmodule.h>
 
 #include <flow/FieldLine.h>
+#include <flow/SeedPoint.h>
 
 
 namespace inviwo {
 	
-	FlowModule::FlowModule() : InviwoModule() {
-    setIdentifier("Flow");
+	FlowModule::FlowModule(InviwoApplication* app) : InviwoModule(app, "Flow") {
 
-	registerProcessor(FieldLine);
-
-	
+	registerProcessor<FieldLine>();	
+	registerProcessor<SeedPoint>();	
 }
 
 } // namespace

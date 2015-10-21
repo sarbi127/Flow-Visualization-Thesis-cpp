@@ -39,7 +39,7 @@ class IVW_MODULE_FLOW_API FlowModule : public InviwoModule {
 
 public:
 
-	FlowModule();
+	FlowModule(InviwoApplication *app);
 
 };
 

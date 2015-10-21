@@ -15,7 +15,7 @@
 //#include <inviwo/core/properties/transferfunctionproperty.h>
 //#include <inviwo/core/properties/minmaxproperty.h>
 #include <modules/experimental/datastructures/pointcloud.h>
-#include <modules/experimental/ports/pointcloudport.h>
+//#include <modules/experimental/ports/pointcloudport.h>
 #include <inviwo/core/ports/meshport.h>
 #include <inviwo/core/ports/volumeport.h>
 #include <inviwo/core/properties/optionproperty.h>
@@ -46,7 +46,7 @@ public:
     protected:
 	
     VolumeInport inportvol_;
-	PointCloudInport inportpoint_;
+	DataInport<std::vector<vec3>> inportpoint_;
 	MeshOutport outportline_;
 
     IntProperty numberOfSteps_;
