@@ -1,6 +1,6 @@
 
-#ifndef IVW_FIELDLINE_H
-#define IVW_FIELDLINE_H
+#ifndef IVW_FIELDLINESPHERICALCO_H
+#define IVW_FIELDLINESPHERICALCO_H
 
 
 #include <bitset>
@@ -29,104 +29,99 @@
 #include <mrivisualization/util/utilityfunctions.h>
 #include <modules\eigenutils\eigenutils.h>
 #include <Eigen/Eigenvalues> 
+#include <flow/datastructures/Face.h>
 
 
 
 
 namespace inviwo {
-
-    //class SimpleMesh;
-    //class VolumeRAM;
-	
-	
-class IVW_MODULE_FLOW_API FieldLine : public Processor { 
+		
+class IVW_MODULE_FLOW_API FieldLineSphericalCo : public Processor { 
 public:
 
-    FieldLine();
-    virtual ~FieldLine();
+    FieldLineSphericalCo();
+    virtual ~FieldLineSphericalCo();
 
     InviwoProcessorInfo();
 
     virtual void process();
 
-	FloatProperty dd_;
-	
+	void updateColorLine();
+
     protected:
-	
+
     VolumeInport inportvol_;
-	DataInport<std::vector<vec3>> inportpoint_;
 	MeshInport mesh_inport_;
+	DataInport<std::vector<vec3>> inportpoint_;	
+	DataInport<std::vector<Face>> inportface_;
 
 	MeshOutport outportmesh_;
 	MeshOutport  outportline_;
 	
-	//BoolProperty show_cartesian_;
-	//BoolProperty show_spherical_;
-
     IntProperty numberOfSteps_;
     FloatProperty stepSize_;
-	FloatProperty d_;
+	FloatProperty d_Neighbor;
+	FloatProperty d_NextPoint;
+	FloatProperty d_trim_;
+	FloatProperty Power_;
+
 	FloatProperty maxlambda_;
-	
-	IntProperty m_;
+	FloatProperty velocityScale_;
     OptionPropertyInt stepDirection_;
 	OptionPropertyInt integration_type_;
-
-
-	TransferFunctionProperty tf_;
-	FloatProperty velocityScale_;
-	FloatMinMaxProperty minMaxVelocity_;
-
+	OptionPropertyInt colorvertex_;
+	OptionPropertyInt colorline_;
+	TransferFunctionProperty tf_;	
+	//FloatMinMaxProperty minMaxVelocity_;
 	FloatVec3Property center_;
+	BoolProperty spherical_pro_;
+	//IntProperty m_;
 
-	struct neighbor{
+	/*struct neighbor{
 
 		 vec3 p1 ;
 		 vec3 p2 ;
 		 vec3 p3 ;
 		 vec3 p4 ;
 
-	};
+	};*/
 
 	float CalculateDistance(vec3& p1, vec3& p2);
-
-	vec4 distance2color(float idx);
-
+	vec4 velocity2color(const vec3 &veloicty);
+	vec4 idx2color(float idx);
 	vec3 euler(vec3& p, const  VolumeRAM* vector_field, float& stepsize, const int& dir,
 		mat3& transformation_matrix, float* velocity);
-
 	vec3 runge_kutta_4(vec3& p, const VolumeRAM* vector_field,
 		float& stepsize, const int& dir, mat3& transformation_matrix = mat3(1),
 		float* = nullptr);
-
 	void step(const VolumeRAM* volume,
 		BasicMesh* mesh,
 		const vec3 &startPos,
 		const size_t &steps,
 		const int &dir,
 	    Line *l);
-
-	//std::vector<vec3> GetNeighbor(vec3 n, vec3 seedpoint, int m);
-
-	vec4 velocity2color(const vec3 &veloicty);
-
+	float radianToDegree(float rad);
 	vec2 minMaxVelocityTemp_;
-
 	float eigenvalues(vec3 p0, vec3 p1, vec3 p2, vec3 p3);
+	void Calculate4Neighbor(std::vector<vec3> points, const VolumeRAM *volume, BasicMesh *mesh);
+	void FTLE_Low_Resolution(BasicMesh *mesh_sphere);
+	void FTLE_High_Resolution(std::vector<Face> faces, BasicMesh *mesh_sphere);
+	void Dot_Posnor_Vec(BasicMesh *mesh_sphere);
+	void CalculateVertexColor(std::vector<Face> faces, std::vector<vec3> points, const VolumeRAM *volume, BasicMesh *mesh);
+	void ColorLines(BasicMesh *mesh);
+	
 
 	std::vector<vec3> linestrips_;
 	std::vector<Line> lines_;
-
 	std::vector<size_t> index_;
-
+	std::vector<vec4> colorFTLE_;
+	std::vector<vec4> colorDot_;
+	std::vector<float> vel_;
 	vec3 points;
 
 };
 
-
-
-
 } // namespace
 
-#endif // IVW_FIELDLINE_H
+#endif // IVW_FIELDLINESPHERICALCO_H
 

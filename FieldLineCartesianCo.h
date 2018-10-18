@@ -1,6 +1,6 @@
 
-#ifndef IVW_FIELDLINE_H
-#define IVW_FIELDLINE_H
+#ifndef IVW_FIELDLINECARTESIANCO_H
+#define IVW_FIELDLINECARTESIANCO_H
 
 
 #include <bitset>
@@ -34,16 +34,12 @@
 
 
 namespace inviwo {
-
-    //class SimpleMesh;
-    //class VolumeRAM;
-	
-	
-class IVW_MODULE_FLOW_API FieldLine : public Processor { 
+		
+class IVW_MODULE_FLOW_API FieldLineCartesianCo : public Processor { 
 public:
 
-    FieldLine();
-    virtual ~FieldLine();
+    FieldLineCartesianCo();
+    virtual ~FieldLineCartesianCo();
 
     InviwoProcessorInfo();
 
@@ -60,24 +56,26 @@ public:
 	MeshOutport outportmesh_;
 	MeshOutport  outportline_;
 	
-	//BoolProperty show_cartesian_;
-	//BoolProperty show_spherical_;
-
     IntProperty numberOfSteps_;
+
     FloatProperty stepSize_;
 	FloatProperty d_;
 	FloatProperty maxlambda_;
+	FloatProperty velocityScale_;
 	
-	IntProperty m_;
+	//IntProperty m_;
     OptionPropertyInt stepDirection_;
 	OptionPropertyInt integration_type_;
+	OptionPropertyInt color_;
 
 
 	TransferFunctionProperty tf_;
-	FloatProperty velocityScale_;
+	
 	FloatMinMaxProperty minMaxVelocity_;
 
 	FloatVec3Property center_;
+
+	//BoolProperty spherical_pro_;
 
 	struct neighbor{
 
@@ -87,6 +85,45 @@ public:
 		 vec3 p4 ;
 
 	};
+
+	struct face{
+
+		vec3 p1;
+		vec3 p2;
+		vec3 p3;
+
+		face() {}
+
+		face(vec3 o, vec3 t, vec3 f) {
+
+			p1 == o;
+			p2 == t;
+			p3 == f;
+			
+
+		}
+
+
+	};
+
+	struct line{
+
+		vec3 p1;
+		vec3 p2;
+
+		line() {}
+
+		line(vec3 o, vec3 t) {
+			p1 == o;
+			p2 == t;
+
+		}
+	};
+
+
+	std::vector<face> face_;
+	std::vector<line> line_;
+	std::vector<vec3> point_;
 
 	float CalculateDistance(vec3& p1, vec3& p2);
 
@@ -106,13 +143,19 @@ public:
 		const int &dir,
 	    Line *l);
 
-	//std::vector<vec3> GetNeighbor(vec3 n, vec3 seedpoint, int m);
-
 	vec4 velocity2color(const vec3 &veloicty);
 
 	vec2 minMaxVelocityTemp_;
 
+	float radianToDegree(float rad);
+
 	float eigenvalues(vec3 p0, vec3 p1, vec3 p2, vec3 p3);
+
+	void Calculate4Neighbor(std::vector<vec3> points, const VolumeRAM *volume, BasicMesh *mesh);
+
+	void CalculateVertexColor(const VolumeRAM *volume, BasicMesh *mesh, std::vector<vec3> points);
+
+	void AddColorLinesToMesh(BasicMesh *mesh);
 
 	std::vector<vec3> linestrips_;
 	std::vector<Line> lines_;
@@ -125,8 +168,7 @@ public:
 
 
 
-
 } // namespace
 
-#endif // IVW_FIELDLINE_H
+#endif // IVW_FIELDLINECARTESIANCO_H
 
